@@ -2,7 +2,7 @@
 # si se necesita algún dato (lista, valor, etc), esta capa SIEMPRE se comunica con services_nasa_image_gallery.py
 
 from django.shortcuts import redirect, render
-from .layers.services import services_nasa_image_gallery
+from .layers.services import services_nasa_image_gallery as services
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
@@ -12,7 +12,7 @@ def index_page(request):
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
 def getAllImagesAndFavouriteList(request):
-    images = []
+    images = services.getAllImages()
     favourite_list = []
 
     return images, favourite_list
@@ -21,10 +21,8 @@ def getAllImagesAndFavouriteList(request):
 def home(request):
     # llama a la función auxiliar getAllImagesAndFavouriteList() y obtiene 2 listados: uno de las imágenes de la API y otro de favoritos por usuario*.
     # (*) este último, solo si se desarrolló el opcional de favoritos; caso contrario, será un listado vacío [].
-    images = []
-    favourite_list = []
+    images, favourite_list = getAllImagesAndFavouriteList(request)
     return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list} )
-
 
 # función utilizada en el buscador.
 def search(request):
